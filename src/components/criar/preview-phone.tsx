@@ -1,17 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Heart, Music2, Camera } from "lucide-react";
+import { Heart } from "lucide-react";
 import { getElapsed } from "@/lib/relationship-time";
+import { SongPlayerBar } from "@/components/criar/song-player-bar";
+import type { Photo } from "@/components/criar/photo-uploader";
 
 export function PreviewPhone({
   names,
   message,
   since,
   songTitle,
-  songArtist,
   songThumbnail,
-  photoCount,
+  songVideoId,
+  songStartSeconds,
+  photos,
 }: {
   names: string;
   message: string;
@@ -19,7 +22,9 @@ export function PreviewPhone({
   songTitle: string;
   songArtist: string;
   songThumbnail?: string;
-  photoCount: number;
+  songVideoId?: string;
+  songStartSeconds?: number;
+  photos: Photo[];
 }) {
   const [elapsed, setElapsed] = useState(() => getElapsed(since || new Date().toISOString()));
 
@@ -43,7 +48,11 @@ export function PreviewPhone({
       <div className="relative min-h-[560px] w-full overflow-hidden rounded-[2.25rem] bg-gradient-to-b from-brand to-brand-dark">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(255,255,255,0.18),transparent_55%)]" />
 
-        <div className="relative flex flex-col items-center px-6 pb-8 pt-14 text-center text-white">
+        <div
+          className={`relative flex flex-col items-center px-6 pt-14 text-center text-white ${
+            songVideoId ? "pb-16" : "pb-8"
+          }`}
+        >
           <h3
             className={
               "text-3xl leading-tight " + (names ? "text-white" : "text-white/40")
@@ -84,35 +93,15 @@ export function PreviewPhone({
             ))}
           </div>
 
-          {songTitle && (
-            <div className="mt-4 flex w-full items-center gap-2 rounded-2xl bg-white/10 p-3 text-left backdrop-blur-md ring-1 ring-white/20">
-              {songThumbnail ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={songThumbnail}
-                  alt={songTitle}
-                  className="h-8 w-8 shrink-0 rounded-md object-cover"
-                />
-              ) : (
-                <Music2 className="h-4 w-4 shrink-0" />
-              )}
-              <div className="min-w-0">
-                <p className="truncate text-[11px] font-medium">{songTitle}</p>
-                {songArtist && (
-                  <p className="truncate text-[10px] text-white/60">{songArtist}</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {photoCount > 0 && (
+          {photos.length > 0 && (
             <div className="mt-3 grid w-full grid-cols-3 gap-2">
-              {Array.from({ length: Math.min(photoCount, 6) }, (_, i) => (
+              {photos.slice(0, 6).map((photo) => (
                 <div
-                  key={i}
-                  className="flex aspect-square items-center justify-center rounded-xl bg-white/10 backdrop-blur-md ring-1 ring-white/20"
+                  key={photo.id}
+                  className="aspect-square overflow-hidden rounded-xl ring-1 ring-white/20"
                 >
-                  <Camera className="h-4 w-4 text-white/60" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={photo.url} alt="" className="h-full w-full object-cover" />
                 </div>
               ))}
             </div>
@@ -122,6 +111,15 @@ export function PreviewPhone({
             <Heart className="h-4 w-4 fill-white" />
           </span>
         </div>
+
+        {songVideoId && songTitle && (
+          <SongPlayerBar
+            videoId={songVideoId}
+            title={songTitle}
+            thumbnail={songThumbnail ?? ""}
+            startSeconds={songStartSeconds ?? 0}
+          />
+        )}
       </div>
     </div>
   );

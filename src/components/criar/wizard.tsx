@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Camera, Minus, Music2, Plus, Sparkles, Wand2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Music2, Sparkles, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QrArt } from "@/components/ui/qr-art";
 import { StepIndicator } from "@/components/criar/step-indicator";
 import { PreviewPhone } from "@/components/criar/preview-phone";
 import { SongPicker, type YoutubeSong } from "@/components/criar/song-picker";
+import { PhotoUploader, type Photo } from "@/components/criar/photo-uploader";
 import { getPlan, formatBRL, planHasMusic, MUSIC_ADDON_PRICE } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +20,9 @@ type FormData = {
   songTitle: string;
   songArtist: string;
   songThumbnail: string;
-  photoCount: number;
+  songVideoId: string;
+  songStartSeconds: number;
+  photos: Photo[];
   musicAddOn: boolean;
 };
 
@@ -97,7 +100,9 @@ export function Wizard() {
     songTitle: "",
     songArtist: "",
     songThumbnail: "",
-    photoCount: 0,
+    songVideoId: "",
+    songStartSeconds: 0,
+    photos: [],
     musicAddOn: false,
   });
 
@@ -112,14 +117,19 @@ export function Wizard() {
   };
 
   const selectSong = (song: YoutubeSong) =>
-    update({ songTitle: song.title, songArtist: song.artist, songThumbnail: song.thumbnail });
+    update({
+      songTitle: song.title,
+      songArtist: song.artist,
+      songThumbnail: song.thumbnail,
+      songVideoId: song.videoId,
+    });
 
   const selectedSong: YoutubeSong | null = data.songTitle
     ? {
         title: data.songTitle,
         artist: data.songArtist,
         thumbnail: data.songThumbnail,
-        videoId: "",
+        videoId: data.songVideoId,
       }
     : null;
 
@@ -275,33 +285,7 @@ export function Wizard() {
                 )}
 
                 {step === 3 && (
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-2 rounded-xl border border-dashed border-white/15 bg-white/5 px-5 py-8">
-                      <Camera className="h-5 w-5 text-white/40" />
-                      <p className="text-sm text-white/40">
-                        {data.photoCount} de 10 fotos adicionadas
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={() => update({ photoCount: Math.max(0, data.photoCount - 1) })}
-                        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-white/70 transition-colors hover:bg-white/10"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          update({ photoCount: Math.min(10, data.photoCount + 1) })
-                        }
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-brand text-white transition-transform hover:scale-105"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-                      <span className="text-sm text-white/50">Adicionar foto</span>
-                    </div>
-                  </div>
+                  <PhotoUploader photos={data.photos} onChange={(photos) => update({ photos })} />
                 )}
 
                 {step === 4 && !musicIncluded && !data.musicAddOn && (
@@ -316,7 +300,47 @@ export function Wizard() {
                 )}
 
                 {step === 4 && (musicIncluded || data.musicAddOn) && (
-                  <SongPicker song={selectedSong} onSelect={selectSong} />
+                  <div className="flex flex-col gap-4">
+                    <SongPicker song={selectedSong} onSelect={selectSong} />
+
+                    {selectedSong && (
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                        <label className="flex items-start gap-3">
+                          <input
+                            type="checkbox"
+                            checked={data.songStartSeconds > 0}
+                            onChange={(e) =>
+                              update({ songStartSeconds: e.target.checked ? 30 : 0 })
+                            }
+                            className="mt-0.5 h-4 w-4 shrink-0 accent-brand"
+                          />
+                          <span className="text-sm text-white/70">
+                            A música não começa do início? Marque esta opção se você quer que
+                            o vídeo comece em um momento específico da música (por exemplo,
+                            pular a introdução).
+                          </span>
+                        </label>
+
+                        {data.songStartSeconds > 0 && (
+                          <div className="mt-3 pl-7">
+                            <label className="mb-1.5 block text-xs text-white/50">
+                              Em quantos segundos a música deve começar?
+                            </label>
+                            <input
+                              type="number"
+                              min={0}
+                              value={data.songStartSeconds}
+                              onChange={(e) =>
+                                update({ songStartSeconds: Math.max(0, Number(e.target.value)) })
+                              }
+                              placeholder="Ex: 30 (para começar aos 30 segundos)"
+                              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 outline-none transition-colors focus:border-brand"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 )}
 
                 {step === 5 && (
@@ -384,7 +408,9 @@ export function Wizard() {
             songTitle={data.songTitle}
             songArtist={data.songArtist}
             songThumbnail={data.songThumbnail}
-            photoCount={data.photoCount}
+            songVideoId={data.songVideoId}
+            songStartSeconds={data.songStartSeconds}
+            photos={data.photos}
           />
         </div>
       </div>
