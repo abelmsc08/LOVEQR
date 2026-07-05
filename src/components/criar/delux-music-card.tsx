@@ -2,26 +2,35 @@
 
 import { Pause, Play } from "lucide-react";
 import { useYoutubePlayer } from "@/lib/use-youtube-player";
+import { hexToRgba } from "@/lib/themes";
 
 export function DeluxMusicCard({
   videoId,
   title,
   thumbnail,
   startSeconds = 0,
+  accent = "#b45309",
 }: {
   videoId: string;
   title: string;
   thumbnail: string;
   startSeconds?: number;
+  accent?: string;
 }) {
   const { containerRef, playing, togglePlay } = useYoutubePlayer(videoId, startSeconds);
 
   return (
     <div className="mt-6 w-full">
-      <p className="text-[11px] uppercase tracking-[0.25em] text-amber-700/70">
+      <p
+        className="text-[11px] uppercase tracking-[0.25em]"
+        style={{ color: hexToRgba(accent, 0.7) }}
+      >
         Nossa música
       </p>
-      <div className="mt-3 flex items-center gap-3 rounded-xl border border-amber-900/10 bg-white p-3 shadow-sm">
+      <div
+        className="mt-3 flex items-center gap-3 rounded-xl border bg-white p-3 shadow-sm"
+        style={{ borderColor: hexToRgba(accent, 0.1) }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={thumbnail}
@@ -30,7 +39,7 @@ export function DeluxMusicCard({
         />
         <div className="min-w-0 flex-1 text-left">
           <p className="truncate text-sm font-medium text-ink/80">{title}</p>
-          <p className="text-xs text-amber-700/60">
+          <p className="text-xs" style={{ color: hexToRgba(accent, 0.6) }}>
             {playing ? "Tocando agora" : "Toque para tocar"}
           </p>
         </div>
@@ -38,12 +47,13 @@ export function DeluxMusicCard({
           type="button"
           onClick={togglePlay}
           aria-label={playing ? "Pausar" : "Tocar"}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-800 transition-transform hover:scale-105"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
+          style={{ backgroundColor: hexToRgba(accent, 0.15), color: accent }}
         >
           {playing ? (
-            <Pause className="h-4 w-4 fill-amber-800" />
+            <Pause className="h-4 w-4" style={{ fill: accent }} />
           ) : (
-            <Play className="ml-0.5 h-4 w-4 fill-amber-800" />
+            <Play className="ml-0.5 h-4 w-4" style={{ fill: accent }} />
           )}
         </button>
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Music2, Sparkles, Wand2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, ImageOff, Music2, Sparkles, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QrArt } from "@/components/ui/qr-art";
 import { StepIndicator } from "@/components/criar/step-indicator";
@@ -101,6 +101,7 @@ export function Wizard() {
 
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [showPhotoConfirm, setShowPhotoConfirm] = useState(false);
   const [data, setData] = useState<FormData>({
     names: "",
     message: "",
@@ -147,6 +148,10 @@ export function Wizard() {
 
   const goNext = () => {
     if (!valid) return;
+    if (step === 3 && data.photos.length === 0) {
+      setShowPhotoConfirm(true);
+      return;
+    }
     if (isLast) {
       setSubmitted(true);
       return;
@@ -453,6 +458,7 @@ export function Wizard() {
               songVideoId={data.songVideoId}
               songStartSeconds={data.songStartSeconds}
               photos={data.photos}
+              themeId={data.themeId}
             />
           ) : (
             <PreviewPhone
@@ -470,6 +476,63 @@ export function Wizard() {
           )}
         </div>
       </div>
+
+      <AnimatePresence>
+        {showPhotoConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6"
+            onClick={() => setShowPhotoConfirm(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 12, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: 0.97 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-sm rounded-2xl border border-white/10 bg-ink p-6 shadow-2xl"
+            >
+              <div className="flex items-start gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft/10 text-brand-light">
+                  <ImageOff className="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 className="font-display text-lg font-bold text-white">
+                    Continuar sem fotos?
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/60">
+                    Você não adicionou nenhuma foto ao seu presente. As fotos tornam a
+                    experiência muito mais especial! Tem certeza que deseja continuar sem
+                    fotos?
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPhotoConfirm(false);
+                    setStep((s) => s + 1);
+                  }}
+                  className="h-11 rounded-full bg-white/10 text-sm font-semibold text-white transition-colors hover:bg-white/15"
+                >
+                  Continuar sem fotos
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowPhotoConfirm(false)}
+                  className="h-11 rounded-full bg-gradient-brand text-sm font-semibold text-white shadow-[0_8px_30px_-6px_rgba(185,28,28,0.55)] transition-transform hover:-translate-y-0.5"
+                >
+                  Quero adicionar fotos
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
