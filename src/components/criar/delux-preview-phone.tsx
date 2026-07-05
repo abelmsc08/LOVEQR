@@ -56,7 +56,7 @@ export function DeluxPreviewPhone({
   return (
     <div className="relative w-[280px] shrink-0 rounded-[2.75rem] border-[6px] border-ink bg-ink p-2 shadow-2xl sm:w-[320px]">
       <div className="absolute left-1/2 top-2 z-10 h-5 w-28 -translate-x-1/2 rounded-full bg-ink" />
-      <div className="relative min-h-[560px] w-full overflow-y-auto rounded-[2.25rem] bg-[#faf5ec]">
+      <div className="delux-scroll relative h-[560px] w-full overflow-y-auto overscroll-contain rounded-[2.25rem] bg-[#faf5ec]">
         <div className="flex flex-col items-center px-6 pb-10 pt-12 text-center">
           <p className="text-[11px] uppercase tracking-[0.3em] text-amber-700/60">
             uma história de amor
