@@ -5,7 +5,12 @@ export type Theme = {
   gradientFrom: string;
   gradientTo: string;
   deluxAccent: string;
+  deluxBackground: string;
+  deluxText: string;
 };
+
+const CREAM = "#faf5ec";
+const INK = "#111827";
 
 export const themes: Theme[] = [
   {
@@ -15,6 +20,8 @@ export const themes: Theme[] = [
     gradientFrom: "#b91c1c",
     gradientTo: "#7f1d1d",
     deluxAccent: "#b91c1c",
+    deluxBackground: CREAM,
+    deluxText: INK,
   },
   {
     id: "dourado",
@@ -23,6 +30,8 @@ export const themes: Theme[] = [
     gradientFrom: "#b45309",
     gradientTo: "#78350f",
     deluxAccent: "#b45309",
+    deluxBackground: CREAM,
+    deluxText: INK,
   },
   {
     id: "rose",
@@ -31,6 +40,8 @@ export const themes: Theme[] = [
     gradientFrom: "#be185d",
     gradientTo: "#831843",
     deluxAccent: "#be185d",
+    deluxBackground: "#fdf1f4",
+    deluxText: INK,
   },
   {
     id: "safira",
@@ -39,6 +50,8 @@ export const themes: Theme[] = [
     gradientFrom: "#1e3a8a",
     gradientTo: "#0f172a",
     deluxAccent: "#1e3a8a",
+    deluxBackground: "#eef3fb",
+    deluxText: INK,
   },
   {
     id: "esmeralda",
@@ -47,6 +60,8 @@ export const themes: Theme[] = [
     gradientFrom: "#065f46",
     gradientTo: "#022c22",
     deluxAccent: "#065f46",
+    deluxBackground: CREAM,
+    deluxText: INK,
   },
   {
     id: "noturno",
@@ -54,7 +69,9 @@ export const themes: Theme[] = [
     swatch: ["#27272a", "#ffffff", "#71717a"],
     gradientFrom: "#3f3f46",
     gradientTo: "#0a0a0a",
-    deluxAccent: "#3f3f46",
+    deluxAccent: "#a1a1aa",
+    deluxBackground: "#18181b",
+    deluxText: "#f4f4f5",
   },
 ];
 

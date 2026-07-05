@@ -32,6 +32,8 @@ export function DeluxPreviewPhone({
 }) {
   const theme = getTheme(themeId);
   const accent = theme.deluxAccent;
+  const textColor = theme.deluxText;
+  const mutedText = hexToRgba(textColor, 0.7);
 
   const [elapsed, setElapsed] = useState(() => getElapsed(since || new Date().toISOString()));
 
@@ -63,8 +65,11 @@ export function DeluxPreviewPhone({
     <div className="relative w-[280px] shrink-0 rounded-[2.75rem] border-[6px] border-ink bg-ink p-2 shadow-2xl sm:w-[320px]">
       <div className="absolute left-1/2 top-2 z-10 h-5 w-28 -translate-x-1/2 rounded-full bg-ink" />
       <div
-        className="delux-scroll relative h-[560px] w-full overflow-y-auto overscroll-contain rounded-[2.25rem] bg-[#faf5ec]"
-        style={{ scrollbarColor: `${accent} transparent` }}
+        className="delux-scroll relative h-[560px] w-full overflow-y-auto overscroll-contain rounded-[2.25rem]"
+        style={{
+          backgroundColor: theme.deluxBackground,
+          scrollbarColor: `${accent} transparent`,
+        }}
       >
         <div className="flex flex-col items-center px-6 pb-10 pt-12 text-center">
           <p
@@ -77,8 +82,8 @@ export function DeluxPreviewPhone({
           <DeluxPhotoCoverflow photos={photos} />
 
           <h3
-            className="mt-5 text-3xl leading-tight text-ink"
-            style={{ fontFamily: "var(--font-script)" }}
+            className="mt-5 text-3xl leading-tight"
+            style={{ fontFamily: "var(--font-script)", color: textColor }}
           >
             {names || "Nome do casal"}
           </h3>
@@ -92,7 +97,7 @@ export function DeluxPreviewPhone({
             {sinceLabel ? `juntos desde ${sinceLabel}` : "juntos desde sempre"}
           </p>
 
-          <p className="mt-5 text-sm italic leading-relaxed text-ink/70">
+          <p className="mt-5 text-sm italic leading-relaxed" style={{ color: mutedText }}>
             {message ? `"${message}"` : "Sua mensagem especial vai aparecer aqui."}
           </p>
 
@@ -124,7 +129,9 @@ export function DeluxPreviewPhone({
                 }
                 className="pr-2"
               >
-                <p className="font-serif text-2xl text-ink">{unit.value}</p>
+                <p className="font-serif text-2xl" style={{ color: textColor }}>
+                  {unit.value}
+                </p>
                 <p
                   className="text-[10px] uppercase tracking-wide"
                   style={{ color: hexToRgba(accent, 0.6) }}
