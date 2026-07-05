@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { QrArt } from "@/components/ui/qr-art";
 import { StepIndicator } from "@/components/criar/step-indicator";
 import { PreviewPhone } from "@/components/criar/preview-phone";
+import { DeluxPreviewPhone } from "@/components/criar/delux-preview-phone";
 import { SongPicker, type YoutubeSong } from "@/components/criar/song-picker";
 import { PhotoUploader, type Photo } from "@/components/criar/photo-uploader";
 import { getPlan, formatBRL, planHasMusic, MUSIC_ADDON_PRICE } from "@/lib/plans";
@@ -441,18 +442,32 @@ export function Wizard() {
         </div>
 
         <div className="mx-auto lg:mx-0">
-          <PreviewPhone
-            names={data.names}
-            message={data.message}
-            since={data.since}
-            songTitle={data.songTitle}
-            songArtist={data.songArtist}
-            songThumbnail={data.songThumbnail}
-            songVideoId={data.songVideoId}
-            songStartSeconds={data.songStartSeconds}
-            photos={data.photos}
-            themeId={data.themeId}
-          />
+          {plan.id === "delux" ? (
+            <DeluxPreviewPhone
+              names={data.names}
+              message={data.message}
+              since={data.since}
+              songTitle={data.songTitle}
+              songArtist={data.songArtist}
+              songThumbnail={data.songThumbnail}
+              songVideoId={data.songVideoId}
+              songStartSeconds={data.songStartSeconds}
+              photos={data.photos}
+            />
+          ) : (
+            <PreviewPhone
+              names={data.names}
+              message={data.message}
+              since={data.since}
+              songTitle={data.songTitle}
+              songArtist={data.songArtist}
+              songThumbnail={data.songThumbnail}
+              songVideoId={data.songVideoId}
+              songStartSeconds={data.songStartSeconds}
+              photos={data.photos}
+              themeId={data.themeId}
+            />
+          )}
         </div>
       </div>
     </main>
