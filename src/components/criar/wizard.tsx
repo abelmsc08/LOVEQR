@@ -11,6 +11,7 @@ import { PreviewPhone } from "@/components/criar/preview-phone";
 import { SongPicker, type YoutubeSong } from "@/components/criar/song-picker";
 import { PhotoUploader, type Photo } from "@/components/criar/photo-uploader";
 import { getPlan, formatBRL, planHasMusic, MUSIC_ADDON_PRICE } from "@/lib/plans";
+import { themes } from "@/lib/themes";
 import { cn } from "@/lib/utils";
 
 type FormData = {
@@ -23,6 +24,7 @@ type FormData = {
   songVideoId: string;
   songStartSeconds: number;
   photos: Photo[];
+  themeId: string;
   musicAddOn: boolean;
 };
 
@@ -47,6 +49,11 @@ const steps = [
     id: "fotos",
     title: "Fotos marcantes",
     description: "Escolha até 10 fotos para deixar sua página ainda mais especial.",
+  },
+  {
+    id: "cores",
+    title: "Escolha uma paleta de cores",
+    description: "Selecione a paleta que melhor combina com a sua história. 🎨",
   },
   {
     id: "musica",
@@ -77,7 +84,7 @@ function isStepValid(step: number, data: FormData, musicIncluded: boolean) {
       return data.message.trim().length > 0;
     case 2:
       return data.since.trim().length > 0;
-    case 4:
+    case 5:
       if (!musicIncluded && !data.musicAddOn) return true;
       return data.songTitle.trim().length > 0;
     default:
@@ -103,6 +110,7 @@ export function Wizard() {
     songVideoId: "",
     songStartSeconds: 0,
     photos: [],
+    themeId: themes[0].id,
     musicAddOn: false,
   });
 
@@ -214,7 +222,7 @@ export function Wizard() {
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               className="mt-8"
             >
-              {step === 4 && !musicIncluded ? (
+              {step === 5 && !musicIncluded ? (
                 <>
                   <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
                     Torne esse momento ainda mais inesquecível{" "}
@@ -288,7 +296,39 @@ export function Wizard() {
                   <PhotoUploader photos={data.photos} onChange={(photos) => update({ photos })} />
                 )}
 
-                {step === 4 && !musicIncluded && !data.musicAddOn && (
+                {step === 4 && (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {themes.map((theme) => {
+                      const isSelected = data.themeId === theme.id;
+                      return (
+                        <button
+                          key={theme.id}
+                          type="button"
+                          onClick={() => update({ themeId: theme.id })}
+                          className={cn(
+                            "flex flex-col gap-3 rounded-xl border p-4 text-left transition-all duration-300",
+                            isSelected
+                              ? "border-brand bg-white/10 ring-1 ring-brand"
+                              : "border-white/10 bg-white/[0.03] hover:border-white/20"
+                          )}
+                        >
+                          <div className="flex gap-1.5">
+                            {theme.swatch.map((color, i) => (
+                              <span
+                                key={i}
+                                className="h-5 w-5 rounded-full ring-1 ring-white/20"
+                                style={{ backgroundColor: color }}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-sm font-medium text-white">{theme.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {step === 5 && !musicIncluded && !data.musicAddOn && (
                   <button
                     type="button"
                     onClick={() => update({ musicAddOn: true })}
@@ -299,7 +339,7 @@ export function Wizard() {
                   </button>
                 )}
 
-                {step === 4 && (musicIncluded || data.musicAddOn) && (
+                {step === 5 && (musicIncluded || data.musicAddOn) && (
                   <div className="flex flex-col gap-4">
                     <SongPicker song={selectedSong} onSelect={selectSong} />
 
@@ -343,7 +383,7 @@ export function Wizard() {
                   </div>
                 )}
 
-                {step === 5 && (
+                {step === 6 && (
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-white/50">Plano selecionado</span>
@@ -392,7 +432,7 @@ export function Wizard() {
             >
               {isLast
                 ? "Finalizar e pagar"
-                : step === 4 && !musicIncluded && !data.musicAddOn
+                : step === 5 && !musicIncluded && !data.musicAddOn
                 ? "Não, obrigado"
                 : "Próximo"}
               <ArrowRight className="h-4 w-4" />
@@ -411,6 +451,7 @@ export function Wizard() {
             songVideoId={data.songVideoId}
             songStartSeconds={data.songStartSeconds}
             photos={data.photos}
+            themeId={data.themeId}
           />
         </div>
       </div>

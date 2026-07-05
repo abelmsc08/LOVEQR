@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { getElapsed } from "@/lib/relationship-time";
 import { SongPlayerBar } from "@/components/criar/song-player-bar";
+import { PhotoSlideshow } from "@/components/criar/photo-slideshow";
 import type { Photo } from "@/components/criar/photo-uploader";
+import { getTheme } from "@/lib/themes";
 
 export function PreviewPhone({
   names,
@@ -15,6 +17,7 @@ export function PreviewPhone({
   songVideoId,
   songStartSeconds,
   photos,
+  themeId,
 }: {
   names: string;
   message: string;
@@ -25,7 +28,9 @@ export function PreviewPhone({
   songVideoId?: string;
   songStartSeconds?: number;
   photos: Photo[];
+  themeId?: string;
 }) {
+  const theme = getTheme(themeId);
   const [elapsed, setElapsed] = useState(() => getElapsed(since || new Date().toISOString()));
 
   useEffect(() => {
@@ -45,7 +50,12 @@ export function PreviewPhone({
   return (
     <div className="relative w-[280px] shrink-0 rounded-[2.75rem] border-[6px] border-ink bg-ink p-2 shadow-2xl sm:w-[320px]">
       <div className="absolute left-1/2 top-2 z-10 h-5 w-28 -translate-x-1/2 rounded-full bg-ink" />
-      <div className="relative min-h-[560px] w-full overflow-hidden rounded-[2.25rem] bg-gradient-to-b from-brand to-brand-dark">
+      <div
+        className="relative min-h-[560px] w-full overflow-hidden rounded-[2.25rem]"
+        style={{
+          background: `linear-gradient(to bottom, ${theme.gradientFrom}, ${theme.gradientTo})`,
+        }}
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(255,255,255,0.18),transparent_55%)]" />
 
         <div
@@ -93,19 +103,7 @@ export function PreviewPhone({
             ))}
           </div>
 
-          {photos.length > 0 && (
-            <div className="mt-3 grid w-full grid-cols-3 gap-2">
-              {photos.slice(0, 6).map((photo) => (
-                <div
-                  key={photo.id}
-                  className="aspect-square overflow-hidden rounded-xl ring-1 ring-white/20"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={photo.url} alt="" className="h-full w-full object-cover" />
-                </div>
-              ))}
-            </div>
-          )}
+          <PhotoSlideshow photos={photos} />
 
           <span className="mt-6 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-md">
             <Heart className="h-4 w-4 fill-white" />
