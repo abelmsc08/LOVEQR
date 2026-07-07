@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
 import { cn } from "@/lib/utils";
 
 const links = [
@@ -47,9 +48,7 @@ export function Navbar() {
           )}
         >
           <a href="#" className="flex items-center gap-2 font-display font-bold text-lg text-ink">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-brand text-white">
-              <Heart className="h-4 w-4 fill-white" />
-            </span>
+            <Logo size={32} />
             Meu QR Love
           </a>
 

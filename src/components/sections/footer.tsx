@@ -1,4 +1,5 @@
-import { Heart, Camera, Users, Play } from "lucide-react";
+import { Camera, Users, Play } from "lucide-react";
+import { Logo } from "@/components/ui/logo";
 
 const columns = [
   {
@@ -22,9 +23,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
           <div className="col-span-2">
             <a href="#" className="flex items-center gap-2 font-display text-lg font-bold text-white">
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-brand">
-                <Heart className="h-4 w-4 fill-white text-white" />
-              </span>
+              <Logo size={32} />
               Meu QR Love
             </a>
             <p className="mt-4 max-w-xs text-sm leading-relaxed">
