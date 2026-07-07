@@ -51,6 +51,7 @@ type FormData = {
   photos: Photo[];
   themeId: string;
   musicAddOn: boolean;
+  noMusic: boolean;
   // Poster de Filme
   movieTitle: string;
   tagline: string;
@@ -260,8 +261,9 @@ function isStepValid(
         ? data.openImmediately || data.openDate.trim().length > 0
         : data.since.trim().length > 0;
     case "musica":
-      if (!isAniversario && !isPoster && !musicIncluded && !data.musicAddOn) return true;
       if (isPoster) return true; // música opcional no poster
+      if (isAniversario) return data.noMusic || data.songTitle.trim().length > 0;
+      if (!musicIncluded && !data.musicAddOn) return true;
       return data.songTitle.trim().length > 0;
     default:
       return true;
@@ -323,6 +325,7 @@ export function Wizard() {
     photos: [],
     themeId: themes[0].id,
     musicAddOn: false,
+    noMusic: false,
     movieTitle: "",
     tagline: "",
     synopsis: "",
@@ -1048,8 +1051,26 @@ export function Wizard() {
                   </button>
                 )}
 
+                {currentStepId === "musica" && isAniversario && (
+                  <button
+                    type="button"
+                    onClick={() => update({ noMusic: !data.noMusic, songTitle: "", songArtist: "", songThumbnail: "", songVideoId: "" })}
+                    className="mb-4 flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white/80 transition-colors hover:bg-white/10"
+                  >
+                    <Music2 className="h-4 w-4" />
+                    {data.noMusic ? "Quero adicionar uma música" : "Não quero música"}
+                  </button>
+                )}
+
+                {currentStepId === "musica" && isAniversario && data.noMusic && (
+                  <p className="text-sm text-white/50">
+                    Tudo bem! Sua página de aniversário será enviada sem trilha sonora.
+                  </p>
+                )}
+
                 {currentStepId === "musica" &&
-                  (isAniversario || isPoster || musicIncluded || data.musicAddOn) && (
+                  (isAniversario || isPoster || musicIncluded || data.musicAddOn) &&
+                  !(isAniversario && data.noMusic) && (
                     <div className="flex flex-col gap-4">
                       <SongPicker song={selectedSong} onSelect={selectSong} />
 
