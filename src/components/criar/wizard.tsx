@@ -27,12 +27,14 @@ import { AniversarioPreviewPhone } from "@/components/criar/aniversario-preview-
 import { PosterPreviewPhone } from "@/components/criar/poster-preview-phone";
 import { DateCalendar } from "@/components/criar/date-calendar";
 import { SongPicker, type YoutubeSong } from "@/components/criar/song-picker";
+import { RecipientCardPreview } from "@/components/criar/recipient-card-preview";
 import { PhotoUploader, type Photo } from "@/components/criar/photo-uploader";
 import { getPlan, formatBRL, planHasMusic, MUSIC_ADDON_PRICE } from "@/lib/plans";
 import { themes } from "@/lib/themes";
 import { cn } from "@/lib/utils";
 
 type FormData = {
+  recipientName: string;
   names: string;
   message: string;
   since: string;
@@ -66,7 +68,14 @@ const aniversarioAccentEmoji: Record<string, string> = {
   efeitos: "🎉",
 };
 
+const paraQuemStep = {
+  id: "para-quem",
+  title: "Para quem é o presente?",
+  description: "Digite o nome de quem vai receber esse presente especial.",
+};
+
 const aniversarioSteps = [
+  paraQuemStep,
   {
     id: "surpresa",
     title: "Tela de Surpresa",
@@ -111,6 +120,7 @@ const aniversarioSteps = [
 ];
 
 const posterSteps = [
+  paraQuemStep,
   {
     id: "titulo-filme",
     title: "Título do Filme",
@@ -165,6 +175,7 @@ const posterTaglineIdeas = [
 ];
 
 const defaultSteps = [
+  paraQuemStep,
   {
     id: "nome",
     title: "Nome do casal",
@@ -230,6 +241,8 @@ function isStepValid(
   isPoster: boolean
 ) {
   switch (stepId) {
+    case "para-quem":
+      return data.recipientName.trim().length > 0;
     case "nome":
       return data.names.trim().length > 0;
     case "surpresa":
@@ -293,6 +306,7 @@ export function Wizard() {
   const [cinemaModePreview, setCinemaModePreview] = useState(false);
   const [cinemaPrevIdx, setCinemaPrevIdx] = useState(0);
   const [data, setData] = useState<FormData>({
+    recipientName: "",
     names: "",
     message: "",
     since: "",
@@ -839,6 +853,21 @@ export function Wizard() {
                   />
                 )}
 
+                {currentStepId === "para-quem" && (
+                  <div className="flex flex-col gap-3">
+                    <input
+                      autoFocus
+                      value={data.recipientName}
+                      onChange={(e) => update({ recipientName: e.target.value })}
+                      placeholder="Ex: Ana, Pedro, Maria..."
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-white/30 outline-none transition-colors focus:border-brand"
+                    />
+                    <p className="text-white/40 text-xs">
+                      Este nome aparecerá no cartão que você entregará à pessoa.
+                    </p>
+                  </div>
+                )}
+
                 {currentStepId === "nome" && (
                   <input
                     autoFocus
@@ -1345,7 +1374,9 @@ export function Wizard() {
         </div>
 
         <div className="mx-auto lg:mx-0">
-          {plan.id === "delux" ? (
+          {currentStepId === "para-quem" ? (
+            <RecipientCardPreview recipientName={data.recipientName} />
+          ) : plan.id === "delux" ? (
             <DeluxPreviewPhone
               names={data.names}
               message={data.message}
