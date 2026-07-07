@@ -555,35 +555,45 @@ export function Wizard() {
     const downloadPdf = () => {
       const win = window.open("", "_blank");
       if (!win) return;
+      const recipient = data.recipientName.trim() || displayName;
       win.document.write(`<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8"/>
-  <title>QR Love – ${displayName}</title>
+  <title>QR Love – ${recipient}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: Georgia, serif; background: #fff; color: #111; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    .card { width: 480px; padding: 48px 40px; text-align: center; border: 1px solid #e5e7eb; border-radius: 24px; }
-    .logo { font-size: 13px; letter-spacing: 0.25em; text-transform: uppercase; color: #9ca3af; margin-bottom: 32px; }
-    .heart { font-size: 36px; margin-bottom: 16px; }
-    h1 { font-size: 28px; font-weight: bold; color: #111; margin-bottom: 8px; }
-    .sub { font-size: 14px; color: #6b7280; margin-bottom: 32px; }
-    .qr-box { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; display: inline-block; margin-bottom: 24px; }
-    .qr-box img { width: 200px; height: 200px; display: block; }
-    .url { font-size: 12px; color: #6b7280; word-break: break-all; margin-bottom: 32px; padding: 10px 16px; background: #f9fafb; border-radius: 8px; }
-    .footer { font-size: 11px; color: #d1d5db; }
-    @media print { body { -webkit-print-color-adjust: exact; } }
+    .card { width: 320px; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10); }
+    .bar-top { height: 8px; width: 100%; background: linear-gradient(to right, #dc2626, #f87171); }
+    .bar-bottom { height: 4px; width: 100%; background: linear-gradient(to right, #f87171, #dc2626); }
+    .content { display: flex; flex-direction: column; align-items: center; padding: 32px 32px; gap: 20px; }
+    .heart-badge { display: flex; height: 48px; width: 48px; align-items: center; justify-content: center; border-radius: 9999px; background: #fef2f2; font-size: 24px; }
+    .para-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; color: #9ca3af; margin-bottom: 4px; text-align: center; }
+    .recipient-name { font-family: 'Brush Script MT', cursive; font-size: 28px; font-weight: bold; color: #111827; text-align: center; }
+    .message { text-align: center; font-size: 14px; color: #6b7280; line-height: 1.6; }
+    .qr-box { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; }
+    .qr-box img { width: 160px; height: 160px; display: block; border-radius: 12px; }
+    .qr-caption { font-size: 11px; color: #9ca3af; letter-spacing: 0.02em; text-align: center; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
   </style>
 </head>
 <body>
   <div class="card">
-    <p class="logo">QR Love</p>
-    <p class="heart">❤️</p>
-    <h1>${displayName}</h1>
-    <p class="sub">Escaneie o QR Code abaixo para abrir sua página especial</p>
-    <div class="qr-box"><img src="${qrDataUrl}" alt="QR Code"/></div>
-    <p class="url">${pageUrl}</p>
-    <p class="footer">Feito com amor · qrlove.com.br</p>
+    <div class="bar-top"></div>
+    <div class="content">
+      <div class="heart-badge">❤️</div>
+      <div>
+        <p class="para-label">Para</p>
+        <p class="recipient-name">${recipient}</p>
+      </div>
+      <p class="message">Uma surpresa especial<br/>espera por você.</p>
+      <div class="qr-box">
+        <img src="${qrDataUrl}" alt="QR Code"/>
+        <p class="qr-caption">Escaneie com a câmera do celular</p>
+      </div>
+    </div>
+    <div class="bar-bottom"></div>
   </div>
   <script>window.onload=()=>{ window.print(); }</script>
 </body>
