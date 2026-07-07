@@ -289,11 +289,11 @@ export function Wizard() {
     document.head.appendChild(s);
   }, []);
 
-  const [step, setStep] = useState(() => {
+  const [step, setStep] = useState<number>(() => {
     try {
       const raw = localStorage.getItem("qrlove_draft");
       if (!raw) return 0;
-      const draft = JSON.parse(raw);
+      const draft = JSON.parse(raw) as { planId?: string; step?: number };
       if (draft.planId === planId) return draft.step ?? 0;
     } catch { /* ignore */ }
     return 0;
@@ -377,7 +377,6 @@ export function Wizard() {
           photos: data.photos.filter((p) => p.url.startsWith("http")).map((p) => ({ id: p.id, url: p.url })),
           cinemaPhotos: data.cinemaPhotos.filter((p) => p.url.startsWith("http")).map((p) => ({ id: p.id, url: p.url })),
         },
-        savedAt: Date.now(),
       };
       localStorage.setItem("qrlove_draft", JSON.stringify(draft));
     } catch {

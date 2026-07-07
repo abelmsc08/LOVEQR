@@ -1,28 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface Draft {
   planId: string;
   step: number;
-  savedAt: number;
+}
+
+function readDraft(): Draft | null {
+  try {
+    const raw = localStorage.getItem("qrlove_draft");
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Draft;
+    if (parsed.planId) return parsed;
+  } catch {
+    /* ignore */
+  }
+  return null;
 }
 
 export function ResumeDraftModal() {
   const router = useRouter();
-  const [draft, setDraft] = useState<Draft | null>(null);
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem("qrlove_draft");
-      if (!raw) return;
-      const parsed: Draft = JSON.parse(raw);
-      if (parsed.planId && parsed.savedAt) setDraft(parsed);
-    } catch {
-      /* ignore */
-    }
-  }, []);
+  const [draft, setDraft] = useState<Draft | null>(readDraft);
 
   if (!draft) return null;
 
@@ -49,7 +49,6 @@ export function ResumeDraftModal() {
 
       {/* Modal */}
       <div className="relative w-full max-w-sm rounded-2xl bg-[#1a1a2e] p-6 text-white shadow-2xl">
-        {/* Icon */}
         <div className="mb-4 flex justify-center">
           <span className="text-4xl">💝</span>
         </div>
