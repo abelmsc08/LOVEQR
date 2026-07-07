@@ -32,10 +32,12 @@ export function AniversarioPreviewPhone({
     return () => clearInterval(id);
   }, [photos.length]);
 
-  // Resetar índice quando as fotos mudarem
-  useEffect(() => {
+  // Resetar índice quando a quantidade de fotos mudar
+  const [prevLen, setPrevLen] = useState(photos.length);
+  if (prevLen !== photos.length) {
+    setPrevLen(photos.length);
     setPhotoIdx(0);
-  }, [photos.length]);
+  }
 
   return (
     <div className="relative w-[280px] shrink-0 rounded-[2.75rem] border-[6px] border-ink bg-ink p-2 shadow-2xl sm:w-[320px]">

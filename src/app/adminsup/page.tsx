@@ -146,6 +146,7 @@ export default function AdminSup() {
             <div className="text-4xl">✅</div>
             <h2 className="text-xl font-bold">Página criada!</h2>
             <p className="text-white/60 text-sm break-all">{pageUrl}</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={result.qrDataUrl} alt="QR Code" className="mx-auto rounded-xl" />
             <div className="flex flex-col gap-3">
               <a

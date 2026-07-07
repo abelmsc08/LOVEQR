@@ -130,7 +130,7 @@ export function PublicPage(props: Props) {
     openImmediately,
     confettiEffect,
     songTitle,
-    songArtist,
+    songArtist: _songArtist,
     songThumbnail,
     songVideoId,
     songStartSeconds,

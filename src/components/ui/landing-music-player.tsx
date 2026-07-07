@@ -80,6 +80,7 @@ export function LandingMusicPlayer() {
       playerRef.current?.destroy();
       playerRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggle = () => {
