@@ -14,7 +14,7 @@ const PLANS = [
 ];
 
 const DELIVERY_BASE =
-  process.env.NEXT_PUBLIC_PAGES_URL ?? "https://entregalovepriv-eout.vercel.app";
+  process.env.NEXT_PUBLIC_PAGES_URL ?? "https://qrlovelink.vercel.app";
 
 export default function AdminSup() {
   const [pass, setPass] = useState("");
