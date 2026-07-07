@@ -2,19 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 
-type YTPlayer = {
+export type YTPlayer = {
   playVideo(): void;
   pauseVideo(): void;
   seekTo(seconds: number, allowSeekAhead: boolean): void;
   getCurrentTime(): number;
   getDuration(): number;
+  setVolume(v: number): void;
   destroy(): void;
 };
 
 declare global {
   interface Window {
     YT: {
-      Player: new (el: HTMLElement, options: Record<string, unknown>) => YTPlayer;
+      Player: new (el: HTMLElement | string, options: Record<string, unknown>) => YTPlayer;
     };
     onYouTubeIframeAPIReady?: () => void;
   }

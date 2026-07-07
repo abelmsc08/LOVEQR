@@ -2,22 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Music2, Pause, Play } from "lucide-react";
+import type { YTPlayer } from "@/lib/use-youtube-player";
 
 const VIDEO_ID = "lBDDMrUCz1A";
-
-declare global {
-  interface Window {
-    YT: {
-      Player: new (el: HTMLElement | string, options: Record<string, unknown>) => {
-        playVideo(): void;
-        pauseVideo(): void;
-        destroy(): void;
-        setVolume(v: number): void;
-      };
-    };
-    onYouTubeIframeAPIReady?: () => void;
-  }
-}
 
 let apiLoaded: Promise<void> | null = null;
 
@@ -39,7 +26,7 @@ function loadYtApi(): Promise<void> {
 
 export function LandingMusicPlayer() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const playerRef = useRef<ReturnType<typeof window.YT.Player> | null>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
   const [playing, setPlaying] = useState(false);
   const [ready, setReady] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -66,8 +53,8 @@ export function LandingMusicPlayer() {
           mute: 0,
         },
         events: {
-          onReady: (e: { target: typeof playerRef.current }) => {
-            e.target?.setVolume(40);
+          onReady: (e: { target: YTPlayer }) => {
+            e.target.setVolume(40);
             setReady(true);
             // Auto-play after first user interaction
             const start = () => {
