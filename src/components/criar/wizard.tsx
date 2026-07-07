@@ -288,7 +288,15 @@ export function Wizard() {
     document.head.appendChild(s);
   }, []);
 
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(() => {
+    try {
+      const raw = localStorage.getItem("qrlove_draft");
+      if (!raw) return 0;
+      const draft = JSON.parse(raw);
+      if (draft.planId === planId) return draft.step ?? 0;
+    } catch { /* ignore */ }
+    return 0;
+  });
   const [submitting, setSubmitting] = useState(false);
   const [pageSlug, setPageSlug] = useState<string | null>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
@@ -308,31 +316,40 @@ export function Wizard() {
   const [cardError, setCardError] = useState("");
   const [cinemaModePreview, setCinemaModePreview] = useState(false);
   const [cinemaPrevIdx, setCinemaPrevIdx] = useState(0);
-  const [data, setData] = useState<FormData>({
-    recipientName: "",
-    names: "",
-    message: "",
-    since: "",
-    title: "",
-    surpresaPara: "",
-    openDate: "",
-    openImmediately: false,
-    confettiEffect: true,
-    songTitle: "",
-    songArtist: "",
-    songThumbnail: "",
-    songVideoId: "",
-    songStartSeconds: 0,
-    photos: [],
-    themeId: themes[0].id,
-    musicAddOn: false,
-    noMusic: false,
-    movieTitle: "",
-    tagline: "",
-    synopsis: "",
-    showDateOnPoster: true,
-    cinemaMessage: "",
-    cinemaPhotos: [],
+  const [data, setData] = useState<FormData>(() => {
+    const defaults: FormData = {
+      recipientName: "",
+      names: "",
+      message: "",
+      since: "",
+      title: "",
+      surpresaPara: "",
+      openDate: "",
+      openImmediately: false,
+      confettiEffect: true,
+      songTitle: "",
+      songArtist: "",
+      songThumbnail: "",
+      songVideoId: "",
+      songStartSeconds: 0,
+      photos: [],
+      themeId: themes[0].id,
+      musicAddOn: false,
+      noMusic: false,
+      movieTitle: "",
+      tagline: "",
+      synopsis: "",
+      showDateOnPoster: true,
+      cinemaMessage: "",
+      cinemaPhotos: [],
+    };
+    try {
+      const raw = localStorage.getItem("qrlove_draft");
+      if (!raw) return defaults;
+      const draft = JSON.parse(raw);
+      if (draft.planId === planId && draft.data) return { ...defaults, ...draft.data };
+    } catch { /* ignore */ }
+    return defaults;
   });
 
   useEffect(() => {
@@ -346,6 +363,26 @@ export function Wizard() {
   const total = plan.price + (!musicIncluded && data.musicAddOn ? MUSIC_ADDON_PRICE : 0);
 
   const update = (patch: Partial<FormData>) => setData((prev) => ({ ...prev, ...patch }));
+
+  // Auto-save progress to localStorage (excluding large photo blobs)
+  useEffect(() => {
+    if (pageSlug) return; // page already created, don't save draft
+    try {
+      const draft = {
+        planId,
+        step,
+        data: {
+          ...data,
+          photos: data.photos.filter((p) => p.url.startsWith("http")).map((p) => ({ id: p.id, url: p.url })),
+          cinemaPhotos: data.cinemaPhotos.filter((p) => p.url.startsWith("http")).map((p) => ({ id: p.id, url: p.url })),
+        },
+        savedAt: Date.now(),
+      };
+      localStorage.setItem("qrlove_draft", JSON.stringify(draft));
+    } catch {
+      // ignore quota errors
+    }
+  }, [data, step, planId, pageSlug]);
 
   const generateMessage = () => {
     const ideas = isAniversario ? birthdayMessageIdeas : messageIdeas;
@@ -424,6 +461,7 @@ export function Wizard() {
     const qr = await QRCode.toDataURL(pageUrl, { width: 256, margin: 1 });
     setPageSlug(slug);
     setQrDataUrl(qr);
+    try { localStorage.removeItem("qrlove_draft"); } catch { /* ignore */ }
   };
 
   const handlePixPay = async () => {
