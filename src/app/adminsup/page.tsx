@@ -4,8 +4,6 @@ import { useState } from "react";
 import QRCode from "qrcode";
 import { themes } from "@/lib/themes";
 
-const PASSWORD = "qrlove@sup2026";
-
 const PLANS = [
   { id: "evento", label: "Evento Especial (1 mês)" },
   { id: "delux", label: "Delux (1 ano)" },
@@ -47,11 +45,23 @@ export default function AdminSup() {
   const [result, setResult] = useState<{ slug: string; qrDataUrl: string } | null>(null);
   const [error, setError] = useState("");
 
-  function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (pass === PASSWORD) {
-      setAuth(true);
-    } else {
+    try {
+      const res = await fetch("/api/admin/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pass }),
+      });
+      if (res.ok) {
+        setAuth(true);
+      } else if (res.status === 429) {
+        setPassErr(true);
+        setPass("");
+      } else {
+        setPassErr(true);
+      }
+    } catch {
       setPassErr(true);
     }
   }

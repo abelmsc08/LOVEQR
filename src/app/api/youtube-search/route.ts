@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { isRateLimited, getClientIp } from "@/lib/rate-limit";
 
 type YoutubeApiItem = {
   id: { videoId: string };
@@ -23,19 +24,22 @@ function decodeHtml(text: string) {
 }
 
 export async function GET(request: Request) {
+  // Rate limit: 30 buscas por minuto por IP
+  const ip = getClientIp(request);
+  if (isRateLimited(`youtube:${ip}`, 30, 60 * 1000)) {
+    return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+  }
+
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q")?.trim();
 
-  if (!query) {
+  if (!query || query.length > 200) {
     return NextResponse.json({ items: [] });
   }
 
   const key = process.env.YOUTUBE_API_KEY;
   if (!key) {
-    return NextResponse.json(
-      { error: "missing_api_key", message: "YOUTUBE_API_KEY não configurada no servidor." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "service_unavailable" }, { status: 503 });
   }
 
   const url =
@@ -43,7 +47,7 @@ export async function GET(request: Request) {
     new URLSearchParams({
       part: "snippet",
       type: "video",
-      videoCategoryId: "10", // Music
+      videoCategoryId: "10",
       maxResults: "8",
       q: query,
       key,
@@ -52,11 +56,8 @@ export async function GET(request: Request) {
   try {
     const res = await fetch(url, { next: { revalidate: 3600 } });
     if (!res.ok) {
-      const detail = await res.text();
-      return NextResponse.json(
-        { error: "youtube_error", status: res.status, detail },
-        { status: 502 }
-      );
+      // Não retorna detalhes do erro da API do Google ao cliente
+      return NextResponse.json({ error: "youtube_error" }, { status: 502 });
     }
     const data = (await res.json()) as { items?: YoutubeApiItem[] };
     const items = (data.items ?? [])
@@ -74,9 +75,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ items });
   } catch {
-    return NextResponse.json(
-      { error: "fetch_failed", message: "Falha ao consultar o YouTube." },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: "fetch_failed" }, { status: 502 });
   }
 }
