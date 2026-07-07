@@ -28,6 +28,7 @@ import { PosterPreviewPhone } from "@/components/criar/poster-preview-phone";
 import { DateCalendar } from "@/components/criar/date-calendar";
 import { SongPicker, type YoutubeSong } from "@/components/criar/song-picker";
 import { RecipientCardPreview } from "@/components/criar/recipient-card-preview";
+import { Logo } from "@/components/ui/logo";
 import { PhotoUploader, type Photo } from "@/components/criar/photo-uploader";
 import { getPlan, formatBRL, planHasMusic, MUSIC_ADDON_PRICE } from "@/lib/plans";
 import { themes } from "@/lib/themes";
@@ -610,9 +611,7 @@ export function Wizard() {
           transition={{ duration: 0.6 }}
           className="flex w-full max-w-md flex-col items-center text-center"
         >
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-brand shadow-[0_0_40px_-8px_rgba(185,28,28,0.7)]">
-            <Sparkles className="h-7 w-7 text-white" />
-          </span>
+          <Logo size={72} />
           <h1 className="mt-8 font-display text-3xl font-extrabold text-white sm:text-4xl">
             Página criada com sucesso!
           </h1>
