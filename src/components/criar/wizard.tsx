@@ -275,9 +275,10 @@ export function Wizard() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const plan = getPlan(searchParams.get("plano") ?? undefined);
+  const planId = plan.id;
   const musicIncluded = planHasMusic(plan);
-  const isAniversario = plan.id === "aniversario";
-  const isPoster = plan.id === "poster";
+  const isAniversario = planId === "aniversario";
+  const isPoster = planId === "poster";
   const steps: Step[] = isAniversario ? aniversarioSteps : isPoster ? posterSteps : defaultSteps;
 
   // Load MercadoPago JS SDK for card tokenization
