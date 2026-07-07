@@ -19,12 +19,6 @@ const tabs = [
 ];
 
 /* ── YouTube ambient player ── */
-declare global {
-  interface Window {
-    YT: { Player: new (el: HTMLElement, opts: Record<string, unknown>) => GalleryYTPlayer };
-    onYouTubeIframeAPIReady?: () => void;
-  }
-}
 type GalleryYTPlayer = {
   playVideo(): void;
   pauseVideo(): void;
@@ -60,7 +54,8 @@ function useGalleryMusic(sectionRef: React.RefObject<HTMLElement | null>) {
     let cancelled = false;
     loadYtApi().then(() => {
       if (cancelled || !ytContainerRef.current) return;
-      playerRef.current = new window.YT.Player(ytContainerRef.current, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      playerRef.current = new (window.YT.Player as any)(ytContainerRef.current, {
         videoId: MUSIC_VIDEO_ID,
         playerVars: { controls: 0, disablekb: 1, autoplay: 0, loop: 1, playlist: MUSIC_VIDEO_ID },
         events: {
