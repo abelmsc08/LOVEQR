@@ -551,6 +551,7 @@ export function Wizard() {
     const deliveryBase = process.env.NEXT_PUBLIC_PAGES_URL ?? "https://qr-love-pages.vercel.app";
     const pageUrl = `${deliveryBase}/${pageSlug}`;
     const displayName = data.names || data.title || data.movieTitle || "quem você ama";
+    const recipientLabel = data.recipientName.trim() || displayName;
 
     const downloadPdf = () => {
       const win = window.open("", "_blank");
@@ -615,9 +616,18 @@ export function Wizard() {
           <h1 className="mt-8 font-display text-3xl font-extrabold text-white sm:text-4xl">
             Página criada com sucesso!
           </h1>
+          <p className="mt-2 text-lg font-semibold text-white/50 tracking-widest uppercase">
+            Para
+          </p>
+          <p
+            className="text-3xl font-bold text-white leading-tight"
+            style={{ fontFamily: "var(--font-dancing, cursive)" }}
+          >
+            {recipientLabel}
+          </p>
           <p className="mt-3 max-w-sm text-white/60">
             Baixe o PDF com o QR Code e entregue para{" "}
-            <span className="text-white">{displayName}</span>.
+            <span className="text-white font-semibold">{recipientLabel}</span>.
           </p>
 
           {qrDataUrl && (
