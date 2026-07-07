@@ -9,28 +9,28 @@ const testimonials = [
     role: "Presenteou o namorado",
     quote:
       "Nunca vi ele tão emocionado. A página ficou linda, com nossa música e todas as fotos. Melhor presente que já dei.",
-    initials: "FA",
+    avatar: "/demo/review1.jpg",
   },
   {
     name: "Rodrigo Lima",
     role: "Pediu namoro",
     quote:
       "Usei para pedir ela em namoro. O contador e a carta deixaram tudo mais especial. Recomendo demais!",
-    initials: "RL",
+    avatar: "/demo/review2.jpg",
   },
   {
     name: "Camila Souza",
     role: "Aniversário de namoro",
     quote:
       "Muito fácil de criar e o resultado parece coisa de outro nível. Ficamos com o QR Code emoldurado em casa.",
-    initials: "CS",
+    avatar: "/demo/review3.jpg",
   },
   {
     name: "Bruno Costa",
     role: "Pedido de casamento",
     quote:
       "Criei a página no dia do pedido. Simples, rápido e extremamente emocionante ver tudo junto na tela dela.",
-    initials: "BC",
+    avatar: "/demo/review4.jpg",
   },
 ];
 
@@ -78,9 +78,12 @@ export function Testimonials() {
                 &ldquo;{t.quote}&rdquo;
               </p>
               <div className="mt-6 flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-brand text-sm font-semibold text-white">
-                  {t.initials}
-                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={t.avatar}
+                  alt={t.name}
+                  className="h-10 w-10 rounded-full object-cover object-top ring-2 ring-brand/20"
+                />
                 <div>
                   <p className="text-sm font-semibold text-ink">{t.name}</p>
                   <p className="text-xs text-muted">{t.role}</p>

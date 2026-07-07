@@ -5,6 +5,15 @@ import { Camera, X } from "lucide-react";
 
 export type Photo = { id: string; url: string };
 
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export function PhotoUploader({
   photos,
   onChange,
@@ -14,22 +23,25 @@ export function PhotoUploader({
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const addFiles = (files: FileList | null) => {
+  const addFiles = async (files: FileList | null) => {
     if (!files) return;
     const remaining = 10 - photos.length;
     if (remaining <= 0) return;
 
-    const next = Array.from(files)
-      .slice(0, remaining)
-      .filter((file) => file.type.startsWith("image/"))
-      .map((file) => ({ id: `${Date.now()}-${Math.random()}`, url: URL.createObjectURL(file) }));
+    const newPhotos = await Promise.all(
+      Array.from(files)
+        .slice(0, remaining)
+        .filter((file) => file.type.startsWith("image/"))
+        .map(async (file) => ({
+          id: `${Date.now()}-${Math.random()}`,
+          url: await fileToBase64(file),
+        }))
+    );
 
-    onChange([...photos, ...next]);
+    onChange([...photos, ...newPhotos]);
   };
 
   const removePhoto = (id: string) => {
-    const photo = photos.find((p) => p.id === id);
-    if (photo) URL.revokeObjectURL(photo.url);
     onChange(photos.filter((p) => p.id !== id));
   };
 

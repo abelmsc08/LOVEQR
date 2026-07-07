@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Page {
+  id               String    @id @default(cuid())
+  slug             String    @unique
+  planId           String
+
+  // Campos comuns
+  names            String    @default("")
+  message          String    @default("")
+  since            String    @default("")
+  themeId          String    @default("crimson")
+
+  // Aniversário
+  title            String    @default("")
+  openDate         String    @default("")
+  openImmediately  Boolean   @default(false)
+  confettiEffect   Boolean   @default(true)
+
+  // Música
+  songTitle        String    @default("")
+  songArtist       String    @default("")
+  songThumbnail    String    @default("")
+  songVideoId      String    @default("")
+  songStartSeconds Int       @default(0)
+  musicAddOn       Boolean   @default(false)
+
+  // Poster de Filme
+  movieTitle       String    @default("")
+  tagline          String    @default("")
+  synopsis         String    @default("")
+  showDateOnPoster Boolean   @default(true)
+  cinemaMessage    String    @default("")
+  cinemaPhotos     Json      @default("[]")
+
+  // Fotos como array JSON de data URLs (base64)
+  photos           Json      @default("[]")
+
+  expiresAt        DateTime?
+  createdAt        DateTime  @default(now())
+
+  @@map("pages")
+}

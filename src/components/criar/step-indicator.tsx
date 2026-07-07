@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils";
 export function StepIndicator({
   total,
   current,
+  showNumbers = true,
 }: {
   total: number;
   current: number;
+  showNumbers?: boolean;
 }) {
   return (
     <div className="flex items-center">
@@ -27,7 +29,7 @@ export function StepIndicator({
                 !isDone && !isCurrent && "border-2 border-dashed border-white/20 text-white/30"
               )}
             >
-              {isDone ? <Check className="h-4 w-4" /> : i + 1}
+              {isDone ? <Check className="h-4 w-4" /> : showNumbers ? i + 1 : null}
             </span>
             {!isLast &&
               (isDone ? (

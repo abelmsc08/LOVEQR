@@ -52,10 +52,14 @@ export function useYoutubePlayer(videoId: string, startSeconds = 0) {
         playerVars: {
           controls: 0,
           disablekb: 1,
+          autoplay: 1,
+          loop: 1,
+          playlist: videoId,
           start: Math.max(0, Math.floor(startSeconds)),
         },
         events: {
-          onReady: () => {
+          onReady: (e: { target: YTPlayer }) => {
+            e.target.playVideo();
             poll = setInterval(() => {
               const p = playerRef.current;
               if (!p) return;
@@ -65,8 +69,12 @@ export function useYoutubePlayer(videoId: string, startSeconds = 0) {
               }
             }, 400);
           },
-          onStateChange: (e: { data: number }) => {
+          onStateChange: (e: { data: number; target: YTPlayer }) => {
             setPlaying(e.data === 1);
+            if (e.data === 0) {
+              e.target.seekTo(Math.max(0, Math.floor(startSeconds)), true);
+              e.target.playVideo();
+            }
           },
         },
       });

@@ -41,3 +41,10 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+/src/generated/prisma
+
+certificates
+
+# claude code internal
+.claude/

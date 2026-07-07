@@ -1,75 +1,117 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { getElapsed } from "@/lib/relationship-time";
+import {
+  EventoPreview,
+  DeluxPreview,
+  PosterPreview,
+} from "@/components/ui/hero-plans-carousel";
 
-type Category = {
-  id: string;
-  label: string;
-  price: string;
-  names: string;
-  message: string;
-  since: string;
+const MUSIC_VIDEO_ID = "lBDDMrUCz1A";
+
+const tabs = [
+  { id: "evento", label: "Evento", price: "R$ 4,90",  href: "/criar?plano=evento" },
+  { id: "delux",  label: "Delux",  price: "R$ 19,90", href: "/criar?plano=delux" },
+  { id: "filme",  label: "Filme",  price: "R$ 27,90", href: "/criar?plano=poster" },
+];
+
+/* ── YouTube ambient player ── */
+declare global {
+  interface Window {
+    YT: { Player: new (el: HTMLElement, opts: Record<string, unknown>) => GalleryYTPlayer };
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+type GalleryYTPlayer = {
+  playVideo(): void;
+  pauseVideo(): void;
+  setVolume(v: number): void;
+  destroy(): void;
 };
 
-const categories: Category[] = [
-  {
-    id: "evento",
-    label: "Evento",
-    price: "R$ 4,90",
-    names: "Maria & João",
-    message:
-      "Cada momento ao seu lado é uma nova razão para sorrir. Você é meu porto seguro, minha alegria diária e meu amor eterno.",
-    since: "2019-03-14T10:00:00",
-  },
-  {
-    id: "delux",
-    label: "Delux",
-    price: "R$ 19,90",
-    names: "Ana & Pedro",
-    message:
-      "Com você aprendi que amor de verdade é escolher todos os dias. Obrigado por transformar minha vida numa história linda.",
-    since: "2022-03-12T18:30:00",
-  },
-  {
-    id: "filme",
-    label: "Filme",
-    price: "R$ 27,90",
-    names: "Rafa & Duda",
-    message:
-      "Nossa história daria um filme inteiro. E o melhor capítulo é que ele continua sendo escrito, junto de você.",
-    since: "2021-07-01T09:15:00",
-  },
-];
+let ytApiReady: Promise<void> | null = null;
+function loadYtApi(): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  if (window.YT?.Player) return Promise.resolve();
+  if (ytApiReady) return ytApiReady;
+  ytApiReady = new Promise((resolve) => {
+    const prev = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => { prev?.(); resolve(); };
+    if (!document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+      const s = document.createElement("script");
+      s.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(s);
+    }
+  });
+  return ytApiReady;
+}
+
+function useGalleryMusic(sectionRef: React.RefObject<HTMLElement | null>) {
+  const ytContainerRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<GalleryYTPlayer | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [ready, setReady] = useState(false);
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadYtApi().then(() => {
+      if (cancelled || !ytContainerRef.current) return;
+      playerRef.current = new window.YT.Player(ytContainerRef.current, {
+        videoId: MUSIC_VIDEO_ID,
+        playerVars: { controls: 0, disablekb: 1, autoplay: 0, loop: 1, playlist: MUSIC_VIDEO_ID },
+        events: {
+          onReady: (e: { target: GalleryYTPlayer }) => {
+            e.target.setVolume(40);
+            setReady(true);
+          },
+          onStateChange: (e: { data: number }) => setPlaying(e.data === 1),
+        },
+      });
+    });
+    return () => { cancelled = true; playerRef.current?.destroy(); playerRef.current = null; };
+  }, []);
+
+  // Auto-start when section enters viewport
+  useEffect(() => {
+    if (!ready) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !startedRef.current) {
+          startedRef.current = true;
+          playerRef.current?.playVideo();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    if (sectionRef.current) obs.observe(sectionRef.current);
+    return () => obs.disconnect();
+  }, [ready, sectionRef]);
+
+  const toggle = () => {
+    if (!playerRef.current) return;
+    if (playing) playerRef.current.pauseVideo();
+    else playerRef.current.playVideo();
+  };
+
+  return { ytContainerRef, playing, ready, toggle };
+}
 
 export function Gallery() {
   const [active, setActive] = useState("evento");
-  const [elapsed, setElapsed] = useState(() => getElapsed(categories[0].since));
-
-  const category = categories.find((c) => c.id === active)!;
-
-  useEffect(() => {
-    const tick = () => setElapsed(getElapsed(category.since));
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
-  }, [category.since]);
-
-  const units = [
-    { label: "anos", value: elapsed.years },
-    { label: "meses", value: elapsed.months },
-    { label: "dias", value: elapsed.days },
-    { label: "horas", value: elapsed.hours },
-    { label: "minutos", value: elapsed.minutes },
-    { label: "segundos", value: elapsed.seconds },
-  ];
+  const sectionRef = useRef<HTMLElement>(null);
+  const { ytContainerRef, playing, toggle } = useGalleryMusic(sectionRef);
 
   return (
-    <section id="galeria" className="overflow-hidden bg-white py-28 sm:py-32">
+    <section ref={sectionRef} id="galeria" className="overflow-hidden bg-white py-28 sm:py-32">
+      {/* Hidden YT container */}
+      <div className="pointer-events-none fixed left-[-9999px] top-0 h-1 w-1 opacity-0" aria-hidden>
+        <div ref={ytContainerRef} />
+      </div>
+
       <div className="mx-auto max-w-2xl px-6 text-center">
         <motion.span
           initial={{ opacity: 0, y: 10 }}
@@ -99,6 +141,7 @@ export function Gallery() {
         </motion.p>
       </div>
 
+      {/* Tab pills */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -107,31 +150,25 @@ export function Gallery() {
         className="mt-10 flex justify-center"
       >
         <div className="inline-flex gap-1 rounded-full border border-black/5 bg-black/[0.03] p-1">
-          {categories.map((cat) => (
+          {tabs.map((tab) => (
             <button
-              key={cat.id}
-              onClick={() => setActive(cat.id)}
+              key={tab.id}
+              onClick={() => setActive(tab.id)}
               className={cn(
                 "flex flex-col items-center rounded-full px-6 py-2 text-sm font-semibold transition-all duration-300",
-                active === cat.id
-                  ? "bg-ink text-white shadow-md"
-                  : "text-muted hover:text-ink"
+                active === tab.id ? "bg-ink text-white shadow-md" : "text-muted hover:text-ink"
               )}
             >
-              {cat.label}
-              <span
-                className={cn(
-                  "text-[11px] font-medium",
-                  active === cat.id ? "text-white/60" : "text-muted/70"
-                )}
-              >
-                {cat.price}
+              {tab.label}
+              <span className={cn("text-[11px] font-medium", active === tab.id ? "text-white/60" : "text-muted/70")}>
+                {tab.price}
               </span>
             </button>
           ))}
         </div>
       </motion.div>
 
+      {/* Phone preview */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -141,63 +178,22 @@ export function Gallery() {
       >
         <div className="absolute inset-x-10 top-10 h-72 rounded-[3rem] bg-brand/15 blur-3xl" />
 
-        <div className="relative w-[300px] rounded-[2.75rem] border-[6px] border-ink bg-ink p-2 shadow-2xl sm:w-[320px]">
-          <div className="absolute left-1/2 top-2 z-10 h-5 w-28 -translate-x-1/2 rounded-full bg-ink" />
-          <div className="relative min-h-[600px] w-full overflow-hidden rounded-[2.25rem] bg-gradient-to-b from-brand to-brand-dark">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_10%,rgba(255,255,255,0.18),transparent_55%)]" />
-
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={category.id}
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -14 }}
-                transition={{ duration: 0.4 }}
-                className="relative flex flex-col items-center px-6 pb-8 pt-14 text-center text-white"
-              >
-                <h3
-                  className="text-4xl leading-tight"
-                  style={{ fontFamily: "var(--font-script)" }}
-                >
-                  {category.names}
-                </h3>
-
-                <p className="mt-4 text-sm leading-relaxed text-white/85">
-                  {category.message}
-                </p>
-
-                <p
-                  className="mt-6 text-2xl text-white/95"
-                  style={{ fontFamily: "var(--font-script)" }}
-                >
-                  Juntos há
-                </p>
-
-                <div className="mt-4 grid w-full grid-cols-2 gap-2.5">
-                  {units.map((unit) => (
-                    <div
-                      key={unit.label}
-                      className="rounded-2xl bg-white/15 py-3 backdrop-blur-md ring-1 ring-white/25"
-                    >
-                      <p className="font-display text-2xl font-extrabold tabular-nums">
-                        {unit.value}
-                      </p>
-                      <p className="text-[11px] uppercase tracking-wide text-white/70">
-                        {unit.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                <span className="mt-6 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 backdrop-blur-md">
-                  <Heart className="h-4 w-4 fill-white" />
-                </span>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active}
+            initial={{ opacity: 0, scale: 0.97, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: -10 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {active === "evento" && <EventoPreview musicPlaying={playing} onMusicToggle={toggle} />}
+            {active === "delux"  && <DeluxPreview  musicPlaying={playing} onMusicToggle={toggle} />}
+            {active === "filme"  && <PosterPreview musicPlaying={playing} onMusicToggle={toggle} />}
+          </motion.div>
+        </AnimatePresence>
       </motion.div>
 
+      {/* CTA */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -205,10 +201,20 @@ export function Gallery() {
         transition={{ delay: 0.1 }}
         className="mt-10 flex justify-center"
       >
-        <Button size="lg" variant="primary">
+        <Button size="lg" variant="primary" onClick={() => {
+          const href = tabs.find(t => t.id === active)?.href ?? "/criar";
+          window.location.href = href;
+        }}>
           Quero esse modelo
         </Button>
       </motion.div>
+
+      <style>{`
+        @keyframes musicPulseBar {
+          from { transform: scaleY(0.4); }
+          to   { transform: scaleY(1.6); }
+        }
+      `}</style>
     </section>
   );
 }

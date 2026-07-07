@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Heart, Play, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/ui/particles";
-import { PhoneMockup } from "@/components/ui/phone-mockup";
+import { HeroPlansCarousel } from "@/components/ui/hero-plans-carousel";
 
 export function Hero() {
   return (
@@ -85,29 +85,7 @@ export function Hero() {
           className="relative flex justify-center lg:justify-end"
         >
           <div className="absolute -inset-x-10 -inset-y-10 rounded-[3rem] bg-gradient-to-br from-brand/10 to-transparent blur-2xl" />
-          <div className="relative animate-float">
-            <PhoneMockup />
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, x: -20, y: 10 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.8 }}
-            className="glass absolute -left-6 top-10 hidden rounded-2xl px-4 py-3 shadow-xl sm:block"
-          >
-            <p className="text-xs font-semibold text-ink">💌 Carta enviada</p>
-            <p className="text-[11px] text-muted">com todo carinho</p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 20, y: -10 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.7, delay: 1 }}
-            className="glass absolute -right-4 bottom-16 hidden rounded-2xl px-4 py-3 shadow-xl sm:block"
-          >
-            <p className="text-xs font-semibold text-ink">📍 Rio de Janeiro</p>
-            <p className="text-[11px] text-muted">onde tudo começou</p>
-          </motion.div>
+          <HeroPlansCarousel />
         </motion.div>
       </div>
     </section>
