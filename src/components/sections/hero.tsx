@@ -8,41 +8,41 @@ import { HeroPlansCarousel } from "@/components/ui/hero-plans-carousel";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden pt-36 pb-20 sm:pt-44 sm:pb-28">
+    <section className="relative overflow-hidden bg-[#fce9e6] pt-36 pb-20 sm:pt-44 sm:pb-28 md:bg-white">
 
       {/* ── Imagens de fundo responsivas ── */}
       <div className="pointer-events-none absolute inset-0">
-        {/* Desktop */}
+        {/* Desktop — landscape, cobre tudo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/publichero-bg-desktop.webp"
           alt=""
-          className="absolute inset-0 hidden h-full w-full object-cover md:block"
+          className="absolute inset-0 hidden h-full w-full object-cover object-center md:block"
         />
-        {/* Mobile */}
+        {/* Mobile — portrait, mostra a imagem toda (contain) */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/publichero-bg-mobile.webp"
           alt=""
-          className="absolute inset-0 block h-full w-full object-cover md:hidden"
+          className="absolute inset-0 block h-full w-full object-contain object-top md:hidden"
         />
 
-        {/* Overlay geral para legibilidade do texto */}
-        <div className="absolute inset-0 bg-white/55" />
+        {/* Overlay — mobile bem leve, desktop mais forte para legibilidade */}
+        <div className="absolute inset-0 bg-white/20 md:bg-white/55" />
 
-        {/* Blur no topo — suaviza a transição com a navbar */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/90 to-transparent backdrop-blur-[1px]" />
+        {/* Blur no topo */}
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#fce9e6]/80 to-transparent md:from-white/90" />
 
-        {/* Blur na base — suaviza a transição com a próxima seção */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white/90 to-transparent" />
+        {/* Blur na base */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#fce9e6]/90 to-transparent md:from-white/90" />
 
-        {/* Blob de blur no canto superior esquerdo */}
+        {/* Blob canto superior esquerdo */}
         <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/30 blur-3xl" />
 
-        {/* Blob de blur no canto inferior direito */}
+        {/* Blob canto inferior direito */}
         <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-white/30 blur-3xl" />
 
-        {/* Blob central suave */}
+        {/* Blob central */}
         <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/20 blur-3xl" />
 
         {/* Grade sutil */}
