@@ -8,45 +8,44 @@ import { HeroPlansCarousel } from "@/components/ui/hero-plans-carousel";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-[#fce9e6] pt-36 pb-20 sm:pt-44 sm:pb-28 md:bg-white">
+    <section className="relative overflow-hidden pb-32 pt-36 sm:pt-44 sm:pb-40">
 
-      {/* ── Imagens de fundo responsivas ── */}
+      {/* ── Fundo: imagem responsiva ── */}
       <div className="pointer-events-none absolute inset-0">
-        {/* Desktop — landscape, cobre tudo */}
+
+        {/* Desktop — landscape cobre tudo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/publichero-bg-desktop.webp"
           alt=""
           className="absolute inset-0 hidden h-full w-full object-cover object-center md:block"
         />
-        {/* Mobile — portrait, mostra a imagem toda (contain) */}
+
+        {/* Mobile — portrait, cobre tudo alinhado ao topo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/publichero-bg-mobile.webp"
           alt=""
-          className="absolute inset-0 block h-full w-full object-contain object-top md:hidden"
+          className="absolute inset-0 block h-full w-full object-cover object-top md:hidden"
         />
 
-        {/* Overlay — mobile bem leve, desktop mais forte para legibilidade */}
-        <div className="absolute inset-0 bg-white/20 md:bg-white/55" />
+        {/* Desktop: overlay para legibilidade */}
+        <div className="absolute inset-0 hidden bg-white/45 md:block" />
 
-        {/* Blur no topo */}
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#fce9e6]/80 to-transparent md:from-white/90" />
+        {/* Desktop: topo suave */}
+        <div className="absolute inset-x-0 top-0 hidden h-28 bg-gradient-to-b from-white/85 to-transparent md:block" />
 
-        {/* Blur na base */}
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#fce9e6]/90 to-transparent md:from-white/90" />
+        {/* Desktop: base dissolve para stats */}
+        <div className="absolute inset-x-0 bottom-0 hidden h-56 bg-gradient-to-t from-white via-white/70 to-transparent md:block" />
 
-        {/* Blob canto superior esquerdo */}
-        <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/30 blur-3xl" />
+        {/* Mobile: só topo para fusão com navbar */}
+        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/60 to-transparent md:hidden" />
 
-        {/* Blob canto inferior direito */}
-        <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-white/30 blur-3xl" />
+        {/* Blob de blur — canto superior esquerdo */}
+        <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-white/20 blur-3xl" />
 
-        {/* Blob central */}
-        <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/20 blur-3xl" />
-
-        {/* Grade sutil */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,24,39,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,24,39,0.025)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,black_20%,transparent_75%)]" />
+        {/* Blob de blur — canto inferior direito */}
+        <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-white/20 blur-3xl" />
 
         {/* Partículas */}
         <div className="absolute inset-0">
@@ -56,7 +55,7 @@ export function Hero() {
 
       {/* ── Conteúdo ── */}
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 lg:grid-cols-2 lg:gap-8">
-        <div>
+        <div className="rounded-2xl bg-white/70 p-6 backdrop-blur-sm md:bg-transparent md:p-0 md:backdrop-blur-none">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
