@@ -89,6 +89,8 @@ export function EventoPreview({ musicPlaying, onMusicToggle }: { musicPlaying?: 
         <img
           src={EVENTO_PHOTOS[heroIdx]}
           alt=""
+          loading="lazy"
+          decoding="async"
           className="h-[55%] w-full object-cover object-top transition-opacity duration-700"
           key={heroIdx}
         />
@@ -123,7 +125,7 @@ export function EventoPreview({ musicPlaying, onMusicToggle }: { musicPlaying?: 
           {EVENTO_PHOTOS.map((src, i) => (
             <div key={i} className={cn("aspect-square overflow-hidden rounded-lg ring-1", i === heroIdx ? "ring-white" : "ring-white/20")}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt="" className="h-full w-full object-cover" />
+              <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
             </div>
           ))}
         </div>
@@ -218,7 +220,7 @@ export function AniversarioPreview() {
           <div className="relative mt-3 h-32 w-32 overflow-hidden rounded-2xl shadow-xl ring-2 ring-white/30">
             {ANIV_PHOTOS.map((src, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={src} alt="" className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700"
+              <img key={i} src={src} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700"
                 style={{ opacity: i === photoIdx ? 1 : 0 }} />
             ))}
           </div>
@@ -230,7 +232,7 @@ export function AniversarioPreview() {
             {ANIV_PHOTOS.map((src, i) => (
               <div key={i} className={cn("aspect-square overflow-hidden rounded-lg ring-1", i === photoIdx ? "ring-white" : "ring-white/20")}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt="" className="h-full w-full object-cover object-top" />
+                <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover object-top" />
               </div>
             ))}
           </div>
@@ -285,7 +287,7 @@ export function DeluxPreview({ musicPlaying, onMusicToggle }: { musicPlaying?: b
                   style={style}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={DELUX_PHOTOS[photoIdx]} alt="" className="h-full w-full object-cover" />
+                  <img src={DELUX_PHOTOS[photoIdx]} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                 </div>
               );
             })}
@@ -372,7 +374,7 @@ export function PosterPreview({ musicPlaying, onMusicToggle }: { musicPlaying?: 
   return (
     <PhoneFrame>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/demo/poster-bg.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
+      <img src="/demo/poster-bg.webp" alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
       <div className="relative z-10 flex h-full flex-col justify-end px-5 pb-5 text-white">
         <p className="mb-2 text-[8px] uppercase tracking-[0.3em] text-white/35">uma história de amor</p>

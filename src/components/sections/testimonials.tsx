@@ -82,6 +82,8 @@ export function Testimonials() {
                 <img
                   src={t.avatar}
                   alt={t.name}
+                  loading="lazy"
+                  decoding="async"
                   className="h-10 w-10 rounded-full object-cover object-top ring-2 ring-brand/20"
                 />
                 <div>

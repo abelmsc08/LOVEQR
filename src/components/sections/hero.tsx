@@ -13,21 +13,20 @@ export function Hero() {
       {/* ── Fundo: imagem responsiva ── */}
       <div className="pointer-events-none absolute inset-0">
 
-        {/* Desktop — landscape cobre tudo */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/publichero-bg-desktop.webp"
-          alt=""
-          className="absolute inset-0 hidden h-full w-full object-cover object-center md:block"
-        />
-
-        {/* Mobile — portrait, cobre tudo alinhado ao topo */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/publichero-bg-mobile.webp"
-          alt=""
-          className="absolute inset-0 block h-full w-full object-cover object-top md:hidden"
-        />
+        {/* picture: só UMA imagem baixa (mobile OU desktop) */}
+        <picture>
+          <source media="(min-width: 768px)" srcSet="/publichero-bg-desktop.webp" type="image/webp" />
+          <source srcSet="/publichero-bg-mobile.webp" type="image/webp" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/publichero-bg-mobile.webp"
+            alt=""
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover object-top md:object-center"
+          />
+        </picture>
 
         {/* Desktop: overlay para legibilidade */}
         <div className="absolute inset-0 hidden bg-white/45 md:block" />
