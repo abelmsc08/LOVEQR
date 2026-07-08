@@ -89,7 +89,8 @@ export function EventoPreview({ musicPlaying, onMusicToggle }: { musicPlaying?: 
         <img
           src={EVENTO_PHOTOS[heroIdx]}
           alt=""
-          loading="lazy"
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
           className="h-[55%] w-full object-cover object-top transition-opacity duration-700"
           key={heroIdx}

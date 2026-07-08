@@ -50,27 +50,49 @@ function useGalleryMusic(sectionRef: React.RefObject<HTMLElement | null>) {
   const [ready, setReady] = useState(false);
   const startedRef = useRef(false);
 
+  // Inicia o player APENAS quando a seção se aproxima do viewport (300px de margem)
+  // Evita carregar o YouTube API no carregamento inicial da página
   useEffect(() => {
     let cancelled = false;
-    loadYtApi().then(() => {
-      if (cancelled || !ytContainerRef.current) return;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      playerRef.current = new (window.YT.Player as any)(ytContainerRef.current, {
-        videoId: MUSIC_VIDEO_ID,
-        playerVars: { controls: 0, disablekb: 1, autoplay: 0, loop: 1, playlist: MUSIC_VIDEO_ID },
-        events: {
-          onReady: (e: { target: GalleryYTPlayer }) => {
-            e.target.setVolume(40);
-            setReady(true);
-          },
-          onStateChange: (e: { data: number }) => setPlaying(e.data === 1),
-        },
-      });
-    });
-    return () => { cancelled = true; playerRef.current?.destroy(); playerRef.current = null; };
-  }, []);
 
-  // Auto-start when section enters viewport
+    const initPlayer = () => {
+      loadYtApi().then(() => {
+        if (cancelled || !ytContainerRef.current) return;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        playerRef.current = new (window.YT.Player as any)(ytContainerRef.current, {
+          videoId: MUSIC_VIDEO_ID,
+          playerVars: { controls: 0, disablekb: 1, autoplay: 0, loop: 1, playlist: MUSIC_VIDEO_ID },
+          events: {
+            onReady: (e: { target: GalleryYTPlayer }) => {
+              e.target.setVolume(40);
+              setReady(true);
+            },
+            onStateChange: (e: { data: number }) => setPlaying(e.data === 1),
+          },
+        });
+      });
+    };
+
+    const initObs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          initObs.disconnect();
+          initPlayer();
+        }
+      },
+      { rootMargin: "400px", threshold: 0 }
+    );
+    if (sectionRef.current) initObs.observe(sectionRef.current);
+
+    return () => {
+      cancelled = true;
+      initObs.disconnect();
+      playerRef.current?.destroy();
+      playerRef.current = null;
+    };
+  }, [sectionRef]);
+
+  // Auto-start quando a seção fica visível (só após o player estar pronto)
   useEffect(() => {
     if (!ready) return;
     const obs = new IntersectionObserver(

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Heart, Play, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,16 +11,16 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden pb-32 pt-36 sm:pt-44 sm:pb-40">
 
-      {/* ── Fundo: imagem apenas no desktop ── */}
+      {/* ── Fundo: imagem apenas no desktop — next/image para otimização automática ── */}
       <div className="pointer-events-none absolute inset-0 hidden md:block">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <Image
           src="/publichero-bg-desktop.webp"
           alt=""
-          fetchPriority="high"
-          loading="eager"
-          decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          fill
+          priority
+          quality={80}
+          sizes="100vw"
+          className="object-cover object-center"
         />
         <div className="absolute inset-0 bg-white/45" />
         <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/85 to-transparent" />
