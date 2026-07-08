@@ -92,13 +92,23 @@ function useGalleryMusic(sectionRef: React.RefObject<HTMLElement | null>) {
     else playerRef.current.playVideo();
   };
 
-  return { ytContainerRef, playing, ready, toggle };
+  const play = () => {
+    if (!playerRef.current || playing) return;
+    playerRef.current.playVideo();
+  };
+
+  return { ytContainerRef, playing, ready, toggle, play };
 }
 
 export function Gallery() {
   const [active, setActive] = useState("evento");
   const sectionRef = useRef<HTMLElement>(null);
-  const { ytContainerRef, playing, toggle } = useGalleryMusic(sectionRef);
+  const { ytContainerRef, playing, toggle, play } = useGalleryMusic(sectionRef);
+
+  const handleTabChange = (id: string) => {
+    setActive(id);
+    play();
+  };
 
   return (
     <section ref={sectionRef} id="galeria" className="overflow-hidden bg-white py-28 sm:py-32">
@@ -148,7 +158,7 @@ export function Gallery() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActive(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={cn(
                 "flex flex-col items-center rounded-full px-6 py-2 text-sm font-semibold transition-all duration-300",
                 active === tab.id ? "bg-ink text-white shadow-md" : "text-muted hover:text-ink"

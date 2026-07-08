@@ -10,51 +10,34 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden pb-32 pt-36 sm:pt-44 sm:pb-40">
 
-      {/* ── Fundo: imagem responsiva ── */}
+      {/* ── Fundo: imagem apenas no desktop ── */}
+      <div className="pointer-events-none absolute inset-0 hidden md:block">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/publichero-bg-desktop.webp"
+          alt=""
+          fetchPriority="high"
+          loading="eager"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-white/45" />
+        <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/85 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-white via-white/70 to-transparent" />
+      </div>
+
+      {/* Blobs decorativos */}
+      <div className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full bg-brand/10 blur-3xl md:bg-white/20" />
+      <div className="pointer-events-none absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-brand/10 blur-3xl md:bg-white/20" />
+
+      {/* Partículas */}
       <div className="pointer-events-none absolute inset-0">
-
-        {/* picture: só UMA imagem baixa (mobile OU desktop) */}
-        <picture>
-          <source media="(min-width: 768px)" srcSet="/publichero-bg-desktop.webp" type="image/webp" />
-          <source srcSet="/publichero-bg-mobile.webp" type="image/webp" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/publichero-bg-mobile.webp"
-            alt=""
-            fetchPriority="high"
-            loading="eager"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover object-top md:object-center"
-          />
-        </picture>
-
-        {/* Desktop: overlay para legibilidade */}
-        <div className="absolute inset-0 hidden bg-white/45 md:block" />
-
-        {/* Desktop: topo suave */}
-        <div className="absolute inset-x-0 top-0 hidden h-28 bg-gradient-to-b from-white/85 to-transparent md:block" />
-
-        {/* Desktop: base dissolve para stats */}
-        <div className="absolute inset-x-0 bottom-0 hidden h-56 bg-gradient-to-t from-white via-white/70 to-transparent md:block" />
-
-        {/* Mobile: só topo para fusão com navbar */}
-        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/60 to-transparent md:hidden" />
-
-        {/* Blob de blur — canto superior esquerdo */}
-        <div className="absolute -left-24 -top-24 h-80 w-80 rounded-full bg-white/20 blur-3xl" />
-
-        {/* Blob de blur — canto inferior direito */}
-        <div className="absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-white/20 blur-3xl" />
-
-        {/* Partículas */}
-        <div className="absolute inset-0">
-          <Particles count={14} />
-        </div>
+        <Particles count={14} />
       </div>
 
       {/* ── Conteúdo ── */}
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 lg:grid-cols-2 lg:gap-8">
-        <div className="rounded-2xl bg-white/70 p-6 backdrop-blur-sm md:bg-transparent md:p-0 md:backdrop-blur-none">
+        <div>
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}

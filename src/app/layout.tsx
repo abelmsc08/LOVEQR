@@ -40,24 +40,8 @@ export default function RootLayout({
       className={`${jakarta.variable} ${inter.variable} ${dancingScript.variable} h-full antialiased`}
     >
       <head>
-        {/* Preconnect para fontes Google — elimina round-trip no carregamento */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Preload das imagens hero — acima da dobra, carrega com prioridade */}
-        <link
-          rel="preload"
-          as="image"
-          href="/publichero-bg-mobile.webp"
-          type="image/webp"
-          media="(max-width: 767px)"
-        />
-        <link
-          rel="preload"
-          as="image"
-          href="/publichero-bg-desktop.webp"
-          type="image/webp"
-          media="(min-width: 768px)"
-        />
       </head>
       <body className="min-h-full flex flex-col bg-white text-ink">{children}</body>
     </html>
