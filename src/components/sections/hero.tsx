@@ -8,15 +8,53 @@ import { HeroPlansCarousel } from "@/components/ui/hero-plans-carousel";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-white pt-36 pb-20 sm:pt-44 sm:pb-28">
+    <section className="relative overflow-hidden pt-36 pb-20 sm:pt-44 sm:pb-28">
+
+      {/* ── Imagens de fundo responsivas ── */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 left-1/2 h-[620px] w-[620px] -translate-x-1/2 rounded-full bg-gradient-to-br from-brand/20 via-brand-light/10 to-transparent blur-3xl" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,24,39,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,24,39,0.035)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,black_20%,transparent_75%)]" />
+        {/* Desktop */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/publichero-bg-desktop.webp"
+          alt=""
+          className="absolute inset-0 hidden h-full w-full object-cover md:block"
+        />
+        {/* Mobile */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/publichero-bg-mobile.webp"
+          alt=""
+          className="absolute inset-0 block h-full w-full object-cover md:hidden"
+        />
+
+        {/* Overlay geral para legibilidade do texto */}
+        <div className="absolute inset-0 bg-white/55" />
+
+        {/* Blur no topo — suaviza a transição com a navbar */}
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/90 to-transparent backdrop-blur-[1px]" />
+
+        {/* Blur na base — suaviza a transição com a próxima seção */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white/90 to-transparent" />
+
+        {/* Blob de blur no canto superior esquerdo */}
+        <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-white/30 blur-3xl" />
+
+        {/* Blob de blur no canto inferior direito */}
+        <div className="absolute -bottom-16 -right-16 h-80 w-80 rounded-full bg-white/30 blur-3xl" />
+
+        {/* Blob central suave */}
+        <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/20 blur-3xl" />
+
+        {/* Grade sutil */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(17,24,39,0.025)_1px,transparent_1px),linear-gradient(to_bottom,rgba(17,24,39,0.025)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_0%,black_20%,transparent_75%)]" />
+
+        {/* Partículas */}
         <div className="absolute inset-0">
           <Particles count={14} />
         </div>
       </div>
 
+      {/* ── Conteúdo ── */}
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 lg:grid-cols-2 lg:gap-8">
         <div>
           <motion.div
