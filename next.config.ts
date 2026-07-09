@@ -20,12 +20,13 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Next.js precisa de 'unsafe-inline' para estilos inline e 'unsafe-eval' em dev
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.mercadopago.com https://www.youtube.com https://www.googleapis.com https://www.clarity.ms https://connect.facebook.net",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://sdk.mercadopago.com https://www.youtube.com https://www.googleapis.com https://*.clarity.ms https://connect.facebook.net",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://i.ytimg.com https://img.youtube.com https://lh3.googleusercontent.com https://www.facebook.com https://c.clarity.ms",
+      "img-src 'self' data: blob: https://i.ytimg.com https://img.youtube.com https://lh3.googleusercontent.com https://www.facebook.com https://*.clarity.ms",
       "frame-src https://www.youtube.com https://www.youtube-nocookie.com",
-      "connect-src 'self' https://www.googleapis.com https://api.mercadopago.com https://www.clarity.ms https://c.clarity.ms https://www.facebook.com https://connect.facebook.net",
+      "connect-src 'self' https://www.googleapis.com https://api.mercadopago.com https://*.clarity.ms https://www.facebook.com https://connect.facebook.net",
+      "worker-src 'self' blob: https://*.clarity.ms",
       "media-src 'self' https://www.youtube.com",
       "object-src 'none'",
       "base-uri 'self'",
