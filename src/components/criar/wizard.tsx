@@ -441,14 +441,6 @@ export function Wizard() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepId]);
 
-  // Auto-gera o PIX ao entrar na etapa de revisão (uma única vez)
-  useEffect(() => {
-    if (currentStepId === "revisao" && !pixTriggeredRef.current) {
-      pixTriggeredRef.current = true;
-      handlePixPay();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStepId]);
 
   const createPage = async () => {
     const res = await fetch("/api/pages", {
@@ -528,6 +520,15 @@ export function Wizard() {
       setSubmitting(false);
     }
   };
+
+  // Auto-gera o PIX ao entrar na etapa de revisão (uma única vez)
+  useEffect(() => {
+    if (currentStepId === "revisao" && !pixTriggeredRef.current) {
+      pixTriggeredRef.current = true;
+      handlePixPay();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStepId]);
 
   const handleCardPay = async () => {
     if (!cardNumber || !cardExpiry || !cardCvc || !cardName || !cardCpf || !cardEmail) return;
