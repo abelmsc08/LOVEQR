@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -316,6 +316,7 @@ export function Wizard() {
   const [cardEmail, setCardEmail] = useState("");
   const [cardError, setCardError] = useState("");
   const [cinemaModePreview, setCinemaModePreview] = useState(false);
+  const pixTriggeredRef = useRef(false);
   const [cinemaPrevIdx, setCinemaPrevIdx] = useState(0);
   const [data, setData] = useState<FormData>(() => {
     const defaults: FormData = {
@@ -436,6 +437,15 @@ export function Wizard() {
   useEffect(() => {
     if (currentStepId === "revisao") {
       fbqTrack("InitiateCheckout", { value: total, currency: "BRL", num_items: 1 });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStepId]);
+
+  // Auto-gera o PIX ao entrar na etapa de revisão (uma única vez)
+  useEffect(() => {
+    if (currentStepId === "revisao" && !pixTriggeredRef.current) {
+      pixTriggeredRef.current = true;
+      handlePixPay();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepId]);
@@ -1262,20 +1272,11 @@ export function Wizard() {
                           {!pixData ? (
                             <>
                               <div className="flex h-36 w-36 items-center justify-center rounded-2xl bg-white/5">
-                                <QrCode className="h-16 w-16 text-white/20" />
+                                <Loader2 className="h-12 w-12 animate-spin text-white/30" />
                               </div>
                               <p className="text-center text-sm text-white/50">
-                                Clique abaixo para gerar o QR Code Pix
+                                Gerando seu QR Code Pix…
                               </p>
-                              <button
-                                type="button"
-                                onClick={handlePixPay}
-                                disabled={submitting}
-                                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#00B09B] py-3 text-sm font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 disabled:opacity-60"
-                              >
-                                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <QrCode className="h-4 w-4" />}
-                                {submitting ? "Gerando…" : "Gerar código Pix"}
-                              </button>
                             </>
                           ) : (
                             <>
