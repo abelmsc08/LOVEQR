@@ -425,9 +425,11 @@ export function Wizard() {
   const isLast = step === steps.length - 1;
 
   // Meta Pixel helper
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fbqTrack = (event: string, params?: Record<string, unknown>) => {
-    try { (window as any).fbq?.("track", event, params); } catch { /* ignore */ }
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).fbq?.("track", event, params);
+    } catch { /* ignore */ }
   };
 
   // Dispara InitiateCheckout quando o usuário chega na etapa de pagamento
