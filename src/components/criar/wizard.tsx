@@ -424,6 +424,20 @@ export function Wizard() {
   const valid = isStepValid(currentStepId, data, musicIncluded, isAniversario, isPoster);
   const isLast = step === steps.length - 1;
 
+  // Meta Pixel helper
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const fbqTrack = (event: string, params?: Record<string, unknown>) => {
+    try { (window as any).fbq?.("track", event, params); } catch { /* ignore */ }
+  };
+
+  // Dispara InitiateCheckout quando o usuário chega na etapa de pagamento
+  useEffect(() => {
+    if (currentStepId === "revisao") {
+      fbqTrack("InitiateCheckout", { value: total, currency: "BRL", num_items: 1 });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStepId]);
+
   const createPage = async () => {
     const res = await fetch("/api/pages", {
       method: "POST",
@@ -462,9 +476,11 @@ export function Wizard() {
     setPageSlug(slug);
     setQrDataUrl(qr);
     try { localStorage.removeItem("qrlove_draft"); } catch { /* ignore */ }
+    fbqTrack("Purchase", { value: total, currency: "BRL", content_name: plan.name, content_type: "product" });
   };
 
   const handlePixPay = async () => {
+    fbqTrack("AddPaymentInfo", { value: total, currency: "BRL", payment_method: "pix" });
     setSubmitting(true);
     try {
       const res = await fetch("/api/payment/pix", {
@@ -503,6 +519,7 @@ export function Wizard() {
 
   const handleCardPay = async () => {
     if (!cardNumber || !cardExpiry || !cardCvc || !cardName || !cardCpf || !cardEmail) return;
+    fbqTrack("AddPaymentInfo", { value: total, currency: "BRL", payment_method: "card" });
     setCardError("");
     setSubmitting(true);
     try {
