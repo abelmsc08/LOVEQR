@@ -1,18 +1,30 @@
+import Link from "next/link";
 import { Camera, Users, Play } from "lucide-react";
 import { Logo } from "@/components/ui/logo";
 
 const columns = [
   {
     title: "Produto",
-    links: ["Como funciona", "Modelos", "Preços", "Exemplos"],
+    links: [
+      { label: "Como funciona", href: "/#como-funciona" },
+      { label: "Exemplos", href: "/#galeria" },
+      { label: "Preços", href: "/#planos" },
+    ],
   },
   {
     title: "Empresa",
-    links: ["Sobre nós", "Depoimentos", "FAQ", "Contato"],
+    links: [
+      { label: "Sobre nós", href: "/sobre" },
+      { label: "Contato", href: "/contato" },
+    ],
   },
   {
     title: "Legal",
-    links: ["Termos de uso", "Privacidade", "Reembolso"],
+    links: [
+      { label: "Termos de uso", href: "/termos" },
+      { label: "Privacidade", href: "/privacidade" },
+      { label: "Reembolso 7 dias", href: "/reembolso" },
+    ],
   },
 ];
 
@@ -22,10 +34,10 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
           <div className="col-span-2">
-            <a href="#" className="flex items-center gap-2 font-display text-lg font-bold text-white">
+            <Link href="/" className="flex items-center gap-2 font-display text-lg font-bold text-white">
               <Logo size={32} />
               Meu QR Love
-            </a>
+            </Link>
             <p className="mt-4 max-w-xs text-sm leading-relaxed">
               Transforme sua história de amor em uma lembrança eterna.
             </p>
@@ -50,10 +62,10 @@ export function Footer() {
               </h4>
               <ul className="mt-4 flex flex-col gap-3 text-sm">
                 {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="transition-colors hover:text-white">
-                      {link}
-                    </a>
+                  <li key={link.label}>
+                    <Link href={link.href} className="transition-colors hover:text-white">
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
