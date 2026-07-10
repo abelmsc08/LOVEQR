@@ -113,10 +113,10 @@ export function Pricing() {
                 type="button"
                 onClick={() => router.push(`/criar?plano=${p.id}`)}
                 className={cn(
-                  "mt-7 flex h-11 w-full items-center justify-center rounded-full text-sm font-semibold transition-colors",
+                  "mt-7 flex h-11 w-full items-center justify-center rounded-full text-sm font-semibold transition-all",
                   p.highlight
-                    ? "bg-gradient-brand text-white hover:brightness-110"
-                    : "bg-black/[0.04] text-ink group-hover:bg-brand-soft group-hover:text-brand"
+                    ? "bg-green-500 text-white shadow-[0_8px_24px_-6px_rgba(34,197,94,0.55)] hover:bg-green-600 hover:-translate-y-0.5"
+                    : "bg-green-500 text-white hover:bg-green-600 hover:-translate-y-0.5"
                 )}
               >
                 {p.cta}
